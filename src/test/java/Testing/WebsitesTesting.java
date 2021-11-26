@@ -1,31 +1,17 @@
-import io.github.bonigarcia.wdm.WebDriverManager;
+package Testing;
+
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @Execution(ExecutionMode.CONCURRENT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class WebsitesTesting {
-
-    WebDriver driver;
-
-    @BeforeAll
-    static void setDriver() {
-        WebDriverManager.chromedriver().setup();
-    }
-
-    @BeforeEach
-    public void setUp() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-    }
+public class WebsitesTesting extends TestBase {
 
     @ParameterizedTest
     @ValueSource(strings = {"Logowanie na koncie"})
@@ -80,10 +66,5 @@ public class WebsitesTesting {
         driver.get("https://www.selenium.dev/documentation/en/webdriver/");
         String actualTitle = driver.getTitle();
         assertThat(actualTitle, equalTo(expectedTitle));
-    }
-
-    @AfterEach
-    public void tearDown() {
-        driver.quit();
     }
 }
