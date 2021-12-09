@@ -1,26 +1,29 @@
-package Testing;
+package TestBase;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import configuration.BrowserEnvironment;
+import configuration.EnvironmentProperty;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TestBase {
     private static final Logger logger = LoggerFactory.getLogger(TestBase.class);
-    WebDriver driver;
+    protected WebDriver driver;
+    private static BrowserEnvironment browserEnvironment;
+    private static EnvironmentProperty environmentProperty;
 
     @BeforeAll
     static void setDriver() {
-        WebDriverManager.chromedriver().setup();
+        environmentProperty = EnvironmentProperty.getInstance();
+        browserEnvironment = new BrowserEnvironment();
         logger.debug("WebDriver initialized");
+
     }
 
     @BeforeEach
     public void setUp() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        driver = browserEnvironment.getDriver();
         logger.debug("Timeout");
     }
 

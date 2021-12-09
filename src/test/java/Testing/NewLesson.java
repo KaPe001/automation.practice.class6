@@ -1,5 +1,6 @@
 package Testing;
 
+import TestBase.TestBase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
