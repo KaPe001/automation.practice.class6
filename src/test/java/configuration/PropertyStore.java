@@ -12,12 +12,12 @@ public enum PropertyStore {
     BROWSER("browser"),
     ENVIRONMENT("environment");
 
-    private String value;
-    private String propertyKey;
+    private final String value;
+    private final String propertyKey;
     public static final String CONFIG_PROPERTIES = "config.properties";
     private static Properties properties = null;
 
-    private PropertyStore(String key){
+    PropertyStore(String key){
         this.value = this.retrieveValue(key);
         this.propertyKey = key;
 
@@ -67,9 +67,5 @@ public enum PropertyStore {
 
     public String getStringValue(){
         return this.retrieveValue(this.propertyKey);
-    }
-
-    public int getIntValue(){
-        return Integer.parseInt(this.retrieveValue(this.propertyKey));
     }
 }

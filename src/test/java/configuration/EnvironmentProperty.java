@@ -1,6 +1,5 @@
 package configuration;
 
-import TestBase.TestBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,10 +7,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,25 +21,25 @@ public class EnvironmentProperty {
 
     private final String APP_ENV;
 
-    public static EnvironmentProperty getInstance(){
+    public static EnvironmentProperty getInstance() {
         return EnvironmentPropertySingleton.INSTANCE;
     }
 
-    private void initEnv(){
-        if(!this.APP_ENV.isEmpty()){
+    private void initEnv() {
+        if (!this.APP_ENV.isEmpty()) {
             loadAllEnvironmentPropertiesToSystem(this.APP_ENV);
-        }else{
+        } else {
             assertThat(false, equalTo(true));
         }
     }
 
-    private EnvironmentProperty(){
+    private EnvironmentProperty() {
         this.APP_ENV = initAppEnv();
         this.initEnv();
     }
 
     private static String initAppEnv() {
-        return PropertyStore.ENVIRONMENT.isSpecified()? PropertyStore.ENVIRONMENT.getStringValue() : " ";
+        return PropertyStore.ENVIRONMENT.isSpecified() ? PropertyStore.ENVIRONMENT.getStringValue() : " ";
     }
 
     private void loadAllEnvironmentPropertiesToSystem(String app_env) {
@@ -53,26 +50,18 @@ public class EnvironmentProperty {
         URL url = EnvironmentProperty.class.getClassLoader().getResource(directoryName);
         if (url != null) {
             Properties environmentProperties = new Properties();
-
             try {
                 Stream<Path> files = Files.walk(Paths.get(url.toURI()));
-
-
                 try {
-                    ((List)files.filter((x$0) -> {
-                        return Files.isRegularFile(x$0, new LinkOption[0]);
-                    }).collect(Collectors.toList())).forEach((path) -> {
+                    (files.filter(Files::isRegularFile).collect(Collectors.toList())).forEach((path) -> {
                         try {
                             environmentProperties.load(new FileInputStream(path.toString()));
                         } catch (IOException var3) {
                             logger.error("error 1");
-
                         }
-
                     });
                 } catch (Exception e) {
                     logger.error("error 2");
-
                 } finally {
                     if (files != null) {
                         try {
@@ -81,22 +70,20 @@ public class EnvironmentProperty {
                             logger.error("error 3");
                         }
                     } else {
+                        assert false;
                         files.close();
                     }
                 }
-
             } catch (Exception r) {
                 logger.error("error 4");
-
             }
 
-            logger.debug("#### Loading property from uri {}", url.toString());
+            logger.debug("#### Loading property from uri {}", url);
             environmentProperties.forEach((propertyName, propertyValue) -> {
                 if (System.getProperty(propertyName.toString()) == null) {
                     System.setProperty(propertyName.toString(), propertyValue.toString());
-                    logger.debug("****Loading environment property {} = {} ", propertyName.toString(), propertyValue.toString());
+                    logger.debug("****Loading environment property {} = {} ", propertyName, propertyValue);
                 }
-
             });
             logger.debug("#### Properties loaded from {} : {} ", directoryName, environmentProperties.size());
         } else {
@@ -104,8 +91,7 @@ public class EnvironmentProperty {
         }
     }
 
-
-    private static class EnvironmentPropertySingleton{
+    private static class EnvironmentPropertySingleton {
         private static final EnvironmentProperty INSTANCE = new EnvironmentProperty();
     }
 }
