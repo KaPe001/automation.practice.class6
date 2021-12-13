@@ -7,3 +7,7 @@ https://www.filmweb.pl/
 https://www.selenium.dev/documentation/en/webdriver/ - dokumentacja Selenium
 
 Testy są sparametryzowane (parametrem jest tytuł strony). Każdy test z tagiem "regresja" oraz dodatkowym tagiem odpowiadającym nazwie strony.
+
+
+Added configuration.properties file and other classes responsible for framework configuration.
+Added yaml configuration.
