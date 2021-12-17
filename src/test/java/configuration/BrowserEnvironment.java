@@ -1,5 +1,6 @@
 package configuration;
 
+//import configuration.yaml.YamlReader;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -8,26 +9,27 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 
+import java.io.IOException;
+
+
 public class BrowserEnvironment {
     private String browserName = "chrome";
     private boolean headlessBrowser;
     private int webElementTimeOut;
     private int webBrowserImplicitTimeOut;
     private boolean attachScreenShot;
-    private WebDriver driver;
-    private EventFiringWebDriver Driver;
-
     private WebDriver webdriver;
+    private EventFiringWebDriver driver;
 
     public BrowserEnvironment() {
-//        this.headlessBrowser = false;
-//        this.webElementTimeOut = 10;
-//        this.webBrowserImplicitTimeOut = 5;
-//        this.attachScreenShot = true;
+        this.headlessBrowser = false;
+        this.webElementTimeOut = 10;
+        this.webBrowserImplicitTimeOut = 5;
+        this.attachScreenShot = true;
         this.browserName = PropertyStore.BROWSER.isSpecified() ? PropertyStore.BROWSER.getStringValue() : this.browserName;
         // BrowserType.setBrowser(this.browserName.toUpperCase());
         //this.setEnvironmentName(PropertyStore.BROWSER_ENVIRONMENT.isSpecified() ? PropertyStore.BROWSER_ENVIRONMENT.getValue().toUpperCase() : "LOCAL");
-//        this.initBrowserSettings();
+        this.initBrowserSettings();
     }
 
     public String getBrowserName() {
@@ -57,13 +59,16 @@ public class BrowserEnvironment {
 //        this.headlessBrowser = PropertyStore.BROWSER_HEADLESS.getBoolean();
     }
 
-    public WebDriver getDriver() {
+    public WebDriver getDriver() throws IOException {
         switch (this.browserName) {
             case "chrome":
                 ChromeOptions optionsChrome = new ChromeOptions();
                 WebDriverManager.chromedriver().setup();
                 optionsChrome.addArguments("start-maximized");
-                driver = new ChromeDriver(optionsChrome);
+                webdriver = new ChromeDriver(optionsChrome);
+                driver = new EventFiringWebDriver(webdriver);
+//                YamlReader yamlReader = new YamlReader();
+                //String url = yamlReader.getEnvConfig().getEnvironment().getTest().getUrl();
                 driver.get(System.getProperty("appUrl"));
                 break;
             case "firefox":
